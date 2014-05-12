@@ -30,7 +30,7 @@ app.get('/create', function(req, res) {
 app.get('/links', function(req, res) {
   Links.reset().fetch().then(function(links) {
     res.send(200, links.models);
-  })
+  });
 });
 
 app.post('/links', function(req, res) {

@@ -44,23 +44,38 @@ db.knex.schema.hasTable('clicks').then(function(exists) {
 /************************************************************/
 // Add additional schema definitions below
 /************************************************************/
-
-db.knex.schema.createTable('Users', function(table) {
-  table.increments('id');
-  table.string('username');
-  table.string('salt');
-  table.string('hash'); // salted hash
+db.knex.schema.hasTable('clicks').then(function(exists) {
+  if (!exists) {
+    db.knex.schema.createTable('Users', function(table) {
+      table.increments('id');
+      table.string('username');
+      table.string('salt');
+      table.string('hash'); // salted hash
+    });
+  }
 });
 
-db.knex.schema.createTable('Sessions', function(table){
-  table.increments('id');
-  table.dateTime('loggedInAt');
-  table.dateTime('lastRequestAt');
-  // table.string('username');
-  table.integer('uid')
-    .references('id')
-    .inTable('Users');
+db.knex.schema.hasTable('clicks').then(function(exists) {
+  if (!exists) {
+    db.knex.schema.createTable('Sessions', function(table){
+      table.increments('id');
+      table.dateTime('loggedInAt');
+      table.dateTime('lastRequestAt');
+      // table.string('username');
+      table.integer('uid')
+        .references('id')
+        .inTable('Users');
+    }).then(function (table) {
+      console.log('This is our ', table);
+    });
+  }
 });
+
+// new Author({id: 1, first_name: 'User'})
+//   .save({bio: 'Short user bio'}, {patch: true})
+//   .then(function(model) {
+//     // ...
+// });
 
 // db.knex.schema.createTable('Lists', function(table){
 //   table.increments('id');
