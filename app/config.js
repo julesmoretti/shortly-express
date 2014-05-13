@@ -44,7 +44,7 @@ db.knex.schema.hasTable('clicks').then(function(exists) {
 /************************************************************/
 // Add additional schema definitions below
 /************************************************************/
-db.knex.schema.hasTable('clicks').then(function(exists) {
+db.knex.schema.hasTable('Users').then(function(exists) {
   if (!exists) {
     db.knex.schema.createTable('Users', function(table) {
       table.increments('id');
@@ -55,7 +55,7 @@ db.knex.schema.hasTable('clicks').then(function(exists) {
   }
 });
 
-db.knex.schema.hasTable('clicks').then(function(exists) {
+db.knex.schema.hasTable('Sessions').then(function(exists) {
   if (!exists) {
     db.knex.schema.createTable('Sessions', function(table){
       table.increments('id');

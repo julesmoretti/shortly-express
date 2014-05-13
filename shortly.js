@@ -23,6 +23,14 @@ app.get('/', function(req, res) {
   res.render('index');
 });
 
+app.get('/login', function(req, res) {
+  res.render('login');
+});
+
+app.get('/signup', function(req, res) {
+  res.render('signup');
+});
+
 app.get('/create', function(req, res) {
   res.render('index');
 });
@@ -31,6 +39,49 @@ app.get('/links', function(req, res) {
   Links.reset().fetch().then(function(links) {
     res.send(200, links.models);
   });
+});
+
+app.post('/signup', function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+
+
+  // if (util.isInDb(username)) {
+  //   console.log('Username already exist');
+  // } else {
+    //create new user.
+    var user = new User({username: username, password: password});
+
+    // store everything
+    console.log(user);
+    console.log(user.get('username'), user.get('password'), user.get('salt'), user.get('hash'));
+    //
+    // eventually log session
+  // }
+
+  // new Link({ url: uri }).fetch().then(function(found) {
+  //   if (found) {
+  //     res.send(200, found.attributes);
+  //   } else {
+  //     util.getUrlTitle(uri, function(err, title) {
+  //       if (err) {
+  //         console.log('Error reading URL heading: ', err);
+  //         return res.send(404);
+  //       }
+
+  //       var link = new Link({
+  //         url: uri,
+  //         title: title,
+  //         base_url: req.headers.origin
+  //       });
+
+  //       link.save().then(function(newLink) {
+  //         Links.add(newLink);
+  //         res.send(200, newLink);
+  //       });
+  //     });
+  //   }
+  // });
 });
 
 app.post('/links', function(req, res) {
