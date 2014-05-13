@@ -55,9 +55,9 @@ db.knex.schema.hasTable('users').then(function(exists) {
   if (!exists) {
     db.knex.schema.createTable('users', function(table) {
       table.increments('id').primary();
-      // table.integer('session_id')
-      //   .references('id')
-      //   .inTable('sessions');
+      table.integer('session_id')
+        .references('id')
+        .inTable('sessions');
       table.string('username');
       table.string('salt');
       table.string('hash'); // salted hash

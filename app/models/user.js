@@ -10,13 +10,19 @@ var User = db.Model.extend({
     return this.hasMany(Link);
   },
 
+    // var user = new User({username: username, password: password});
+    // console.log(user);
+
+    // res.redirect('/');  // redirect to links page
+
+
   initialize: function() {
     // set salt
     bcrypt.genSalt(10, function(error, salt) {
       this.set('salt', salt);
 
       // set hash
-      bcrypt.hash(this.get('password'), salt, function(){}, function(error, hash){
+      bcrypt.hash(this.get('hash'), salt, function(){}, function(error, hash){
         this.set('hash', hash);
       }.bind(this));
 
@@ -24,8 +30,6 @@ var User = db.Model.extend({
       this.save();
 
     }.bind(this));
-
-    this.setPasswordHash(this.get('password'));
   }
 });
 

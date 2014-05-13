@@ -51,9 +51,8 @@ app.post('/signup', function(req, res) {
   //   res.redirect('/login');   // redirect to signin
   // } else {
     //create new user.
-    var user = new User({username: username, password: password}).save().then(function(model) {
-      console.log(user);
-    });
+    var user = new User({username: username, hash: password});
+    console.log(user);
 
     res.redirect('/');  // redirect to links page
 
