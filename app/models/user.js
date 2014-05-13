@@ -1,24 +1,32 @@
 var db = require('../config');
 var bcrypt = require('bcrypt-nodejs');
 var Promise = require('bluebird');
+var Link = require('./link.js');
 
 var User = db.Model.extend({
-  initialize: function() {
-    console.log(this.password);
-    this.set({'salt': bcrypt.genSaltSync(10)});
-    // this.salt = bcrypt.genSaltSync(10);
-    // console.log(this.salt);
-    // this.get('salt');
-    // this.hash = bcrypt.hashSync(this.get('password'), this.get('salt'));
-    // this.hash = bcrypt.hashSync(this.get('password'), this.salt);
-    this.set({'hash': bcrypt.hashSync(this.get('password'), this.get('salt'))});
-    // console.log(this.get.);
+  tableName: 'users',
+
+  links: function() {
+    return this.hasMany(Link);
   },
 
-  save: function() {
+  initialize: function() {
+    // set salt
+    bcrypt.genSalt(10, function(error, salt) {
+      this.set('salt', salt);
 
+      // set hash
+      bcrypt.hash(this.get('password'), salt, function(){}, function(error, hash){
+        this.set('hash', hash);
+      }.bind(this));
+
+      // save user to the database
+      this.save();
+
+    }.bind(this));
+
+    this.setPasswordHash(this.get('password'));
   }
-
 });
 
 module.exports = User;

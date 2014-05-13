@@ -48,40 +48,17 @@ app.post('/signup', function(req, res) {
 
   // if (util.isInDb(username)) {
   //   console.log('Username already exist');
+  //   res.redirect('/login');   // redirect to signin
   // } else {
     //create new user.
-    var user = new User({username: username, password: password});
+    var user = new User({username: username, password: password}).save().then(function(model) {
+      console.log(user);
+    });
 
-    // store everything
-    console.log(user);
-    console.log(user.get('username'), user.get('password'), user.get('salt'), user.get('hash'));
-    //
-    // eventually log session
+    res.redirect('/');  // redirect to links page
+
   // }
 
-  // new Link({ url: uri }).fetch().then(function(found) {
-  //   if (found) {
-  //     res.send(200, found.attributes);
-  //   } else {
-  //     util.getUrlTitle(uri, function(err, title) {
-  //       if (err) {
-  //         console.log('Error reading URL heading: ', err);
-  //         return res.send(404);
-  //       }
-
-  //       var link = new Link({
-  //         url: uri,
-  //         title: title,
-  //         base_url: req.headers.origin
-  //       });
-
-  //       link.save().then(function(newLink) {
-  //         Links.add(newLink);
-  //         res.send(200, newLink);
-  //       });
-  //     });
-  //   }
-  // });
 });
 
 app.post('/links', function(req, res) {

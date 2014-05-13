@@ -17,11 +17,16 @@ db.knex.schema.hasTable('urls').then(function(exists) {
   if (!exists) {
     db.knex.schema.createTable('urls', function (link) {
       link.increments('id').primary();
+      link.integer('user_id')
+        .references('id')
+        .inTable('users');
       link.string('url', 255);
       link.string('base_url', 255);
       link.string('code', 100);
       link.string('title', 255);
-      link.integer('visits');
+      link.integer('visits')
+        .references('id')
+        .inTable('clicks');
       link.timestamps();
     }).then(function (table) {
       console.log('Created Table', table);
@@ -33,7 +38,9 @@ db.knex.schema.hasTable('clicks').then(function(exists) {
   if (!exists) {
     db.knex.schema.createTable('clicks', function (click) {
       click.increments('id').primary();
-      click.integer('link_id');
+      click.integer('link_id')
+        .references('id')
+        .inTable('urls');
       click.timestamps();
     }).then(function (table) {
       console.log('Created Table', table);
@@ -44,51 +51,36 @@ db.knex.schema.hasTable('clicks').then(function(exists) {
 /************************************************************/
 // Add additional schema definitions below
 /************************************************************/
-db.knex.schema.hasTable('Users').then(function(exists) {
+db.knex.schema.hasTable('users').then(function(exists) {
   if (!exists) {
-    db.knex.schema.createTable('Users', function(table) {
-      table.increments('id');
+    db.knex.schema.createTable('users', function(table) {
+      table.increments('id').primary();
+      // table.integer('session_id')
+      //   .references('id')
+      //   .inTable('sessions');
       table.string('username');
       table.string('salt');
       table.string('hash'); // salted hash
-    });
-  }
-});
-
-db.knex.schema.hasTable('Sessions').then(function(exists) {
-  if (!exists) {
-    db.knex.schema.createTable('Sessions', function(table){
-      table.increments('id');
-      table.dateTime('loggedInAt');
-      table.dateTime('lastRequestAt');
-      // table.string('username');
-      table.integer('uid')
-        .references('id')
-        .inTable('Users');
     }).then(function (table) {
-      console.log('This is our ', table);
+      console.log('Created Table', table);
     });
   }
 });
 
-// new Author({id: 1, first_name: 'User'})
-//   .save({bio: 'Short user bio'}, {patch: true})
-//   .then(function(model) {
-//     // ...
-// });
-
-// db.knex.schema.createTable('Lists', function(table){
-//   table.increments('id');
-//   table.varchar('uri');
-//   table.v
-// });
-// var Users = Bookshelf.Model.extend({
-//   tableName: 'users'
-// });
-
-// var customer = new User;
-
-// customer.set({first_name: "Joe", last_name: "Customer"});
+db.knex.schema.hasTable('sessions').then(function(exists) {
+  if (!exists) {
+    db.knex.schema.createTable('sessions', function(table){
+      table.increments('id').primary();
+      table.integer('user_id')
+        .references('id')
+        .inTable('users');
+      table.dateTime('signin_at');
+      table.dateTime('requested_at');
+    }).then(function (table) {
+      console.log('Created Table', table);
+    });
+  }
+});
 
 // return bookshelf.Knex.Schema.createTable("Sessions", function(table) {
 //   table.increments("id");
