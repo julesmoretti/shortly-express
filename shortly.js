@@ -24,7 +24,7 @@ app.configure(function() {
   app.use(express.static(__dirname + '/public'));
 });
 
-app.get('/', function(req, res) {
+app.get('/', util.restrict, function(req, res) {
   res.render('index');
 });
 
@@ -42,7 +42,8 @@ app.post('/login', function(req, res) {
         if (valid) {
           // create session
           util.createSession(req,res,found);
-          res.redirect('/');
+          // console.log('just finished creating a session for: ', req.session.user);
+          // res.redirect('/');
         } else {
           // invalid password
           console.log(password, ' invalid!');
@@ -64,13 +65,19 @@ app.get('/signup', function(req, res) {
   res.render('signup');
 });
 
-app.get('/create', function(req, res) {
+app.get('/create', util.restrict, function(req, res) {
   res.render('index');
 });
 
-app.get('/links', function(req, res) {
+app.get('/links', util.restrict, function(req, res) {
   Links.reset().fetch().then(function(links) {
     res.send(200, links.models);
+  });
+});
+
+app.get('/logout', function(request, response){
+  request.session.destroy(function(){
+    response.redirect('/');
   });
 });
 
@@ -91,7 +98,7 @@ app.post('/signup', function(req, res) {
 });
 
 
-app.post('/links', function(req, res) {
+app.post('/links', util.restrict, function(req, res) {
   var uri = req.body.url;
 
   if (!util.isValidUrl(uri)) {
