@@ -42,8 +42,6 @@ app.post('/login', function(req, res) {
         if (valid) {
           // create session
           util.createSession(req,res,found);
-          // console.log('just finished creating a session for: ', req.session.user);
-          // res.redirect('/');
         } else {
           // invalid password
           console.log(password, ' invalid!');
@@ -75,9 +73,9 @@ app.get('/links', util.restrict, function(req, res) {
   });
 });
 
-app.get('/logout', function(request, response){
-  request.session.destroy(function(){
-    response.redirect('/');
+app.get('/logOut', function(req, res){
+  req.session.destroy(function(){
+    res.redirect('/');
   });
 });
 
