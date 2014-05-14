@@ -90,7 +90,8 @@ app.post('/signup', function(req, res) {
     } else {
       var user = new User({username: username, hash: password});
       user.saveUser();
-      res.redirect('/');  // redirect to links page
+      util.createSession(req,res,user);
+      // res.redirect('/');  // redirect to links page
     }
   });
 });

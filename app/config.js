@@ -55,43 +55,12 @@ db.knex.schema.hasTable('users').then(function(exists) {
   if (!exists) {
     db.knex.schema.createTable('users', function(table) {
       table.increments('id').primary();
-      table.integer('session_id')
-        .references('id')
-        .inTable('sessions');
       table.string('username');
-      table.string('salt');
       table.string('hash'); // salted hash
     }).then(function (table) {
       console.log('Created Table', table);
     });
   }
 });
-
-db.knex.schema.hasTable('sessions').then(function(exists) {
-  if (!exists) {
-    db.knex.schema.createTable('sessions', function(table){
-      table.increments('id').primary();
-      table.integer('user_id')
-        .references('id')
-        .inTable('users');
-      table.dateTime('signin_at');
-      table.dateTime('requested_at');
-    }).then(function (table) {
-      console.log('Created Table', table);
-    });
-  }
-});
-
-// return bookshelf.Knex.Schema.createTable("Sessions", function(table) {
-//   table.increments("id");
-//   table.dateTime("loggedInAt");
-//   table.dateTime("lastRequestAt");
-//   table.integer('userId')
-//     .unsigned()
-//     .references('id')
-//     .inTable('Users')
-//     .onDelete('CASCADE')  // optional
-//     .onUpdate(...) // optional
-// });
 
 module.exports = db;

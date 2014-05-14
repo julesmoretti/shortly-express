@@ -19,8 +19,6 @@ var User = db.Model.extend({
   saveUser: function() {
     // set salt
     bcrypt.genSalt(10, function(error, salt) {
-      this.set('salt', salt);
-
       // set hash
       bcrypt.hash(this.get('hash'), salt, function(){}, function(error, hash){
         this.set('hash', hash);
