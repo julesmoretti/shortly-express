@@ -16,7 +16,7 @@ var User = db.Model.extend({
     // res.redirect('/');  // redirect to links page
 
 
-  initialize: function() {
+  saveUser: function() {
     // set salt
     bcrypt.genSalt(10, function(error, salt) {
       this.set('salt', salt);

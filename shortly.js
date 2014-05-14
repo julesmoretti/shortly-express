@@ -1,6 +1,7 @@
 var express = require('express');
 var util = require('./lib/utility');
 var partials = require('express-partials');
+var bcrypt = require('bcrypt-nodejs');
 
 var db = require('./app/config');
 var Users = require('./app/collections/users');
@@ -10,6 +11,10 @@ var Link = require('./app/models/link');
 var Click = require('./app/models/click');
 
 var app = express();
+
+app.use(express.bodyParser());
+app.use(express.cookieParser('shhhh, very secret'));
+app.use(express.session());
 
 app.configure(function() {
   app.set('views', __dirname + '/views');
@@ -21,6 +26,34 @@ app.configure(function() {
 
 app.get('/', function(req, res) {
   res.render('index');
+});
+
+app.post('/login', function(req, res) {
+  var username = req.body.username;
+  var password = req.body.password;
+
+  new User({ username: username })
+      .fetch()
+      .then(function(found) {
+    // if exists
+    if (found) {
+      // compare password on found to user input
+      bcrypt.compare(password, found.attributes.hash, function(err, valid){
+        if (valid) {
+          // create session
+          util.createSession(req,res,found);
+          res.redirect('/');
+        } else {
+          // invalid password
+          console.log(password, ' invalid!');
+          res.redirect('/login');
+        }
+      });
+    } else {
+      console.log(username, ' not found!');
+      res.redirect('/login');  // redirect to login page
+    }
+  });
 });
 
 app.get('/login', function(req, res) {
@@ -45,20 +78,18 @@ app.post('/signup', function(req, res) {
   var username = req.body.username;
   var password = req.body.password;
 
-
-  // if (util.isInDb(username)) {
-  //   console.log('Username already exist');
-  //   res.redirect('/login');   // redirect to signin
-  // } else {
-    //create new user.
-    var user = new User({username: username, hash: password});
-    console.log(user);
-
-    res.redirect('/');  // redirect to links page
-
-  // }
-
+  new User({ username: username }).fetch().then(function(found) {
+    if (found) {
+      // create session
+      res.redirect('/login');  // redirect to login page
+    } else {
+      var user = new User({username: username, hash: password});
+      user.saveUser();
+      res.redirect('/');  // redirect to links page
+    }
+  });
 });
+
 
 app.post('/links', function(req, res) {
   var uri = req.body.url;
